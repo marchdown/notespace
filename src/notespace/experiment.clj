@@ -1,19 +1,28 @@
-(ns notespace.v3-experiment1-test
+(ns notespace.experiment
   (:require [notespace.api :as notespace]
             [notespace.kinds :as kind]
-            [clojure.data/csv :as csv]
+            [clojure.data.csv :as csv]
+            ;;[clojure.java.io :as io]
             [notespace.state :as state]
-            [notespace.paths :as paths]))
+            [notespace.paths :as paths])
+
+  (:use [amazonica.aws.ec2]))
+
+
+;; (create-snapshot :volume-id   "vol-8a4857fa"
+;;                  :description "my_new_snapshot")
+
 
 ^kind/hidden
 (comment
   (notespace/init-with-browser)
-  (notespace/init-with-browser :port 1904)
+  (notespace/init-with-browser :port 1927)
 
   (notespace/init)
   (notespace/init :port 1904)
 
   (notespace/stop-server)
+
 
   (notespace/eval-this-notespace)
 
@@ -34,12 +43,98 @@
   (notespace/toggle-single-note-mode true)
   (notespace/toggle-single-note-mode false))
 
+["# Notespace Workflow & Entry Points"]
 
-["# Notespace v3 intro
+["What does my environment look like about now: MacOS, Doom Emacs, notespace git repo, read-file emacs-profile.el, cider-jack-in" ]
+
+["# Sessions"]
+
+["## DB Session"]
+
+["## AWS Session"]
+
+;; ((describe-instances) :reservations)
+;; (keys (describe-instances))
+;; (values (describe-instances))
+;; (describe-images)
+
+["## TODO"]
+["### Feature Engineering Session"]
+["### Saving & Loading Features"]
+["### Cortex"]
+["### Scicloj I."]
+["### Scicloj II."]
+["### Vega"]
+
+
+["# Exploration Intro
+
+  A Literate Programming Excursion into Finance
+
+  ## Order Flow
+
+  The market is presented as a sequence of orders. The orders comprise *orderbook*. We are given orderbook snapshots as follows:
+
+
+  ## Here they are as a text file:"]
+
+
+
+;;(csv/parse-csv ("~/Downloads/snapshot.csv"))
+  (def data (csv/read-csv
+    (slurp
+     "/Users/uprootiny/tardis_incremental_book_L2_super.csv")
+    ))
+
+(def fname "/Users/uprootiny/data/feature_df_Sept.csv")
+(def learning-set (csv/read-csv (slurp fname)))
+
+["### Parsed CSV"]
+
+(def a_moment_in_time (take 2 (take 10 (list data))))
+
+(count (first a_moment_in_time))
+
+
+
+
+
+(count (map count (last (take 10 (list data)))))
+
+
+^kind/dataset-grid
+{:x (range 9)
+ :y (repeatedly 9 rand)
+ :z (take 9 (cycle "abc"))}
+
+^kind/dataset-grid
+data
+
+["## Data is presented in several different formats
+
+- csv files
+- db queries
+- s3 URIs
+  - patterns thereof
+  - filtering functions
+"]
+
+
+["That's our first look at the data. Let's expand on it.
+
+Data is stored in *S3 Cloud Storage*. It should be accessible with the AWS credentials and a library."]
+
+["Example data URI:" "s3://crypto-data-sources/tardis/data_type=oc_mid5_strike_by_rank/res=1m"]
+
+
+;;n)
+
+
+["
 
 [Notespace](https://github.com/scicloj/notespace) is a library that turns any Clojure namespace into a 'notespace' -- a namespace with a [notebook](https://en.wikipedia.org/wiki/Notebook_interface) experience. A notespace evolves in an interactive process of exploration, involving a dialogue of your editor, your REPL, your browser and your mind.
 
-So, `Notespace` with a capital `N` is the name of the tool, and `notespace` with a small `n` is the notion that we just presented.
+So, `Notespace` with a capital `N` `W` is the name of the tool, and `notespace` with a small `n` is the notion that we just presented.
 
 Here we describe an experimental incomplete draft of Notespace Version 3.
 
@@ -49,10 +144,10 @@ It is still a bit buggy around handling concurrency, updating efficiently and co
 
 Here is a note:"]
 
-(+ 1 2
+(+ 1 31
    3 4
    5 8)
-(csv/csv-reader (slurp "~/Downloads/snapshot.csv"))
+;;(csv/csv-reader (slurp "~/Downloads/snapshot.csv"))
 
 ["Notespace renders it so that we see both the code and the evaluation result.
 
@@ -87,10 +182,26 @@ You can always refersh the browser tab. That is useful if it runs out of sync wi
 "#### eval-this-notespace
 
 Use `notespace.api/eval-this-notespace` to evaluate the current namespace, one note after another, and inform Notespace about the evaluation results, one after another.
+"]
 
+["#Hello!"]
+
+(+ 2 4 5 9 11 44)
+
+(csv/parse-csv (slurp (clojure.java.io/file "/Users/uprootiny/tardis_incremental_book_L2_super.csv")))
+
+(* 3 4 5)
+
+["
 If you have a browser view open, it should show the updated rendering of the state of the notespace last touched."
 
-"#### eval-note-at-line
+"#### eval-note-at-line *** ***
+
+"]
+["## *!*"]
+(notespace/eval-note-at-line 120)
+
+["
 
 Use `notespace.api/eval-note-at-line` to evaluate the note at a certain line and inform Notespace about the evaluation result.
 
@@ -308,6 +419,30 @@ Here are some examples."]
            :limit     100
            :svgWidth  100
            :svgHeight 20}]]))
+
+^kind/hiccup
+[:div
+ [:h5 "Plot:"]
+ [:p/sparklinespot
+  {:data      (->> #(- (rand) 0.5)
+                   (repeatedly 99)
+                   (reductions +))
+   :svgHeight 20}]]
+
+^kind/hiccup
+(into [:ul]
+      (for [i (range 9)]
+        [:li
+         i " "
+         [:p/sparklinespot
+          {:data      (for [j (range 999)]
+                        (+ (* 0.4 (rand))
+                           (Math/sin (* i j))))
+           :limit     100
+           :color     'red'
+           :svgWidth  200
+           :svgHeight 30}]]))
+
 
 (require '[gorilla-notes.components.leaflet.providers :as leaflet-providers])
 
