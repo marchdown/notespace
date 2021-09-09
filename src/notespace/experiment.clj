@@ -81,34 +81,46 @@
 
 
 ;;(csv/parse-csv ("~/Downloads/snapshot.csv"))
-  (def data (csv/read-csv
-    (slurp
-     "/Users/uprootiny/tardis_incremental_book_L2_super.csv")
-    ))
+;;   (def data (csv/read-csv
+;;     (slurp
+;;      "/Users/uprootiny/tardis_incremental_book_L2_super.csv")
+;;     ))
 
-(def fname "/Users/uprootiny/data/feature_df_Sept.csv")
-(def learning-set (csv/read-csv (slurp fname)))
+;; (def fname "/Users/uprootiny/data/feature_df_Sept.csv")
+;; (def learning-set (csv/read-csv (slurp fname)))
 
 ["### Parsed CSV"]
 
-(def a_moment_in_time (take 2 (take 10 (list data))))
+(;; def Env {:params {:uris {:olekseisfutures "s3://crypto-data-sources/tardis/data_type=oc_mid5_strike_by_rank/res=1m"
+;;                           :pattern "s3://crypto-data-sources/tardis_orderbooks_samples/security_type=spot/exchange=binance/symbol=BTCUSDT/snapshots_2021%02d%02d.csv"
+;;                           :pattern_mount "/datasets/nestlogic-aws/tardis_orderbooks_samples/security_type=spot/exchange=binance/symbol=BTCUSDT/snapshots_2021%02d%02d.csv"
+;;                           :load_pattern "s3://crypto-data-sources/tardis_orderbooks_samples_2/security_type=spot/exchange=binance/symbol=BTCUSDT/features_3_%d%02d.csv.gz"}}})
+;; ;(:olekseisfutures (:uris (:params Env)))
 
-(count (first a_moment_in_time))
+;; (def a_moment_in_time (take 2 (take 10 (list data))))
+
+;; (count (first a_moment_in_time))
 
 
 
+[:p "Data squeezing:
+- autoencoders
+- transforms
+- PCA
+- projections
+- morphology
+- stats"]
+
+;; (count (map count (last (take 10 (list data)))))
 
 
-(count (map count (last (take 10 (list data)))))
+;; ^kind/dataset-grid
+;; {:x (range 9)
+;;  :y (repeatedly 9 rand)
+;;  :z (take 9 (cycle "abc"))}
 
-
-^kind/dataset-grid
-{:x (range 9)
- :y (repeatedly 9 rand)
- :z (take 9 (cycle "abc"))}
-
-^kind/dataset-grid
-data
+;; ^kind/dataset-grid
+;; data
 
 ["## Data is presented in several different formats
 
